@@ -1,8 +1,43 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { configureStore } from '@reduxjs/toolkit';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
+import faker from 'faker';
+import cookie from 'js-cookie';
+import io from 'socket.io-client';
 import App from './components/App.jsx';
+import UserNameContext from './UserNameContext';
+import rootReducer from './reducers';
+import actions from './actions';
+import normolizeData from './utils/normolizeData';
 
-export default (data) => ReactDOM.render(
-  <App data={data}/>,
-  document.getElementById('chat'),
-);
+const cookieUserName = 'userName';
+
+export default (dataGon) => {
+  const userName = cookie.get(cookieUserName) || faker.name.findName();
+  cookie.set(cookieUserName, userName);
+
+  const socket = io();
+
+  const { channels, messages, currentChannelId } = dataGon;
+
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState: {
+      channels: normolizeData(channels),
+      messages: normolizeData(messages),
+      app: { currentChannelId },
+    },
+  });
+
+  socket.on('newMessage', ({ data }) => store.dispatch(actions.addMessage(data)));
+
+  render(
+    <Provider store={store}>
+      <UserNameContext.Provider value={{ userName }}>
+        <App />
+      </UserNameContext.Provider>
+    </Provider>,
+    document.getElementById('chat'),
+  );
+};

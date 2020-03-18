@@ -1,7 +1,7 @@
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
-// const isDevelopment = !isProduction;
+const isDevelopment = !isProduction;
 
 console.log('isProduction', isProduction);
 
@@ -22,13 +22,14 @@ module.exports = {
     filename: '[name].js',
   },
 
-  // watch: isDevelopment,
+  watch: isDevelopment,
 
-  // watchOptions: {
-  //  aggregateTimeout: 100,
-  // },
+  watchOptions: {
+    aggregateTimeout: 100,
+  },
 
-  // devtool: NODE_ENV === 'development' ? 'source-map' : false,
+  devtool: isDevelopment ? 'source-map' : false,
+
   plugins: [
     // new MiniCssExtractPlugin(),
   ],

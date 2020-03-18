@@ -1,20 +1,20 @@
 ---
 
 plugins:
-  # https://github.com/babel/eslint-plugin-babel
   - babel
-         
-# https://eslint.org/docs/user-guide/configuring#specifying-environments
+  - react
+
 env:
   node: true
   browser: true
   jest: true
-            
-# https://github.com/babel/babel-eslint
+
 parser: babel-eslint
-          
+
 extends:
   - 'airbnb-base'
-        
+  - 'plugin:react/recommended'
+
 rules:
   no-console: 0
+  react/prop-types: 0

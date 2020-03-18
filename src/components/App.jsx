@@ -1,13 +1,19 @@
 import React from 'react';
+import NavBar from './NavBar.jsx';
+import AddMessageForm from './AddMessageForm.jsx';
+import Header from './Header.jsx';
 
-export default class App extends React.Component {
-  render() {
-    const { data } = this.props;
-    console.log('data', data);
-    return (
-      <ul>
-        {data.channels.map(({ id, name }) => <li key={id}>{name}</li>)}
-      </ul>
-    );
-  }
-}
+const App = () => (
+  <div className="vh-100 vw-100">
+    <div className="d-flex flex-column flex-md-row h-100">
+      <NavBar />
+      <div className="d-flex flex-column flex-grow-1 w-100 overflow-auto">
+        <Header />
+        <p>fwefwefwefew</p>
+        <AddMessageForm />
+      </div>
+    </div>
+  </div>
+);
+
+export default App;
