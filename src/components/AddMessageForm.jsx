@@ -25,15 +25,13 @@ const AddMessageForm = () => {
   return (
     <Formik initialValues={{ text: '' }} onSubmit={onSubmit}>
       {() => (
-        <Form className="position-relative d-flex shadow-lg p-2">
-          <Field name="text">
-
-          </Field>
+        <Form className="position-relative d-flex p-2">
+          <Field name="text" className="flex-grow-1" />
           <Button
             type="submit"
             className="align-self-end px-2 py-1 ml-1 btn-info"
           >
-            Add Message
+            Send
           </Button>
         </Form>
       )}

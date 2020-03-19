@@ -1,0 +1,5 @@
+{
+  "brandName": "Chat Slack",
+  "prefixUser": "User: ",
+  "formatDT": "{{date,  MM-DD-YYYY HH:mm:ss}}"
+}

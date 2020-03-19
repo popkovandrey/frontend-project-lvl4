@@ -2,6 +2,7 @@ import React from 'react';
 import NavBar from './NavBar.jsx';
 import AddMessageForm from './AddMessageForm.jsx';
 import Header from './Header.jsx';
+import Messages from './Messages.jsx';
 
 const App = () => (
   <div className="vh-100 vw-100">
@@ -9,7 +10,7 @@ const App = () => (
       <NavBar />
       <div className="d-flex flex-column flex-grow-1 w-100 overflow-auto">
         <Header />
-        <p>fwefwefwefew</p>
+        <Messages />
         <AddMessageForm />
       </div>
     </div>

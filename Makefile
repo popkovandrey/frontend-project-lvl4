@@ -19,3 +19,8 @@ start-frontend:
 build:
 	rm -rf dist
 	npm run build
+
+restart:
+	rm -rf dist
+	npm run build
+	heroku local -f Procfile.dev

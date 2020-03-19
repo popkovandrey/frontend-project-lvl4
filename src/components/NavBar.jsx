@@ -3,7 +3,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 // import Button from 'react-bootstrap/Button';
 import { connect, useDispatch } from 'react-redux';
-// import Avatar from 'react-avatar';
+import { useTranslation } from 'react-i18next';
 import UserNameContext from '../UserNameContext';
 import actions from '../actions';
 import { getChannels, getCountsMessages, getCurrentChannelId } from '../selectors';
@@ -25,7 +25,7 @@ const renderChannel = (props) => {
   const isActive = id === currentChannelId;
 
   return (
-    <Nav.Item key={id} className="ml-2">
+    <Nav.Item key={id} className="ml-3">
       <Nav.Link active={isActive} onClick={handleSelectChannel(props)}>
         {`# ${name} [кол-во: ${countsMessages[id] || 0}]`}
       </Nav.Link>
@@ -35,13 +35,14 @@ const renderChannel = (props) => {
 
 const NavBar = (props) => {
   const { channels } = props;
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { userName } = useContext(UserNameContext);
   return (
     <Navbar bg="dark" variant="dark" className="col-md-2 flex-md-column" expand="md" style={{ minWidth: 'fit-content' }}>
-      <Navbar.Brand>Чат (Slack)</Navbar.Brand>
+      <Navbar.Brand>{t('brandName')}</Navbar.Brand>
       <div className="my-2 ml-1 text-light align-self-start">
-        Пользователь: {userName}
+        {t('prefixUser') + userName}
       </div>
       <Navbar.Toggle aria-controls="navbar" />
       <Navbar.Collapse id="navbar" className="flex-column justify-content-between w-100 mh-100 overflow-auto align-items-start mt-4">

@@ -28,6 +28,7 @@ export default (dataGon) => {
       messages: normolizeData(messages),
       app: { currentChannelId },
     },
+    devTools: process.env.NODE_ENV !== 'production',
   });
 
   socket.on('newMessage', ({ data }) => store.dispatch(actions.addMessage(data)));
@@ -38,6 +39,6 @@ export default (dataGon) => {
         <App />
       </UserNameContext.Provider>
     </Provider>,
-    document.getElementById('chat'),
+    document.getElementById('root'),
   );
 };
