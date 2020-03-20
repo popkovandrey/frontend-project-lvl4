@@ -20,7 +20,7 @@ const Message = (props) => {
     <div className={messageClasses}>
       <Toast className="mw-100">
         <Toast.Header closeButton={false}>
-          <strong className="mr-auto">{author}</strong>
+          <strong className="mr-auto">{author} bbbb</strong>
           <small><Trans i18nKey="formatDT">{{ date }}</Trans></small>
         </Toast.Header>
         <Toast.Body dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(text) }} />

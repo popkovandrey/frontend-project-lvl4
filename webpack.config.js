@@ -4,6 +4,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = !isProduction;
 
 console.log('isProduction', isProduction);
+console.log('isDevelopment', isDevelopment);
 
 module.exports = {
   mode: process.env.NODE_ENV || 'development',

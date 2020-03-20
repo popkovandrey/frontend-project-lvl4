@@ -1,5 +1,14 @@
 {
   "brandName": "Чат Slack",
   "prefixUser": "Пользователь: ",
-  "formatDT": "{{date, DD-MM-YYYY HH:mm:ss}}"
+  "formatDT": "{{date, DD-MM-YYYY HH:mm:ss}}",
+  "addChannelsBtnCaption": "Каналы:",
+  "modals": {
+    "channelAddTitle": "Добавить канал",
+    "channelRenameTitle": "Переименовать канал",
+    "channelRemoveTitle": "Удалить канал",
+    "placeholderAddChannel": "Введите название нового канала",
+    "btnOk": "OK",
+    "btnCancel": "Отмена"
+  }
 }

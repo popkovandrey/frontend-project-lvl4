@@ -8,6 +8,8 @@ const getChannelsAllIds = (state) => state.channels.allIds;
 
 export const getCurrentChannelId = (state) => state.app.currentChannelId;
 
+export const getModalName = (state) => state.app.modalName;
+
 export const getChannels = createSelector(
   [getChannelsAllIds, getChannelsById],
   (allIds, byId) => allIds.map((id) => byId[id]),

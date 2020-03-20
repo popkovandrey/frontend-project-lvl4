@@ -31,7 +31,9 @@ export default (dataGon) => {
     devTools: process.env.NODE_ENV !== 'production',
   });
 
-  socket.on('newMessage', ({ data }) => store.dispatch(actions.addMessage(data)));
+  socket.on('newMessage', ({ data }) => store.dispatch(actions.messageAdd(data)));
+
+  socket.on('newChannel', ({ data }) => store.dispatch(actions.channelAdd(data)));
 
   render(
     <Provider store={store}>

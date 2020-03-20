@@ -1,12 +1,18 @@
 import React, { useContext } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-// import Button from 'react-bootstrap/Button';
+import Button from 'react-bootstrap/Button';
 import { connect, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import UserNameContext from '../UserNameContext';
 import actions from '../actions';
-import { getChannels, getCountsMessages, getCurrentChannelId } from '../selectors';
+import {
+  getChannels,
+  getCountsMessages,
+  getCurrentChannelId,
+  getModalName,
+} from '../selectors';
+import getModalWindow from './modals';
 
 const handleSelectChannel = (props) => (event) => {
   event.preventDefault();
@@ -33,8 +39,17 @@ const renderChannel = (props) => {
   );
 };
 
+const renderModalWindow = (modalInfo) => {
+  if (!modalInfo.name || modalInfo.name === 'none') {
+    return null;
+  }
+
+  const ModalWindow = getModalWindow(modalInfo.name);
+  return <ModalWindow />;
+};
+
 const NavBar = (props) => {
-  const { channels } = props;
+  const { channels, modalName } = props;
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { userName } = useContext(UserNameContext);
@@ -47,11 +62,21 @@ const NavBar = (props) => {
       <Navbar.Toggle aria-controls="navbar" />
       <Navbar.Collapse id="navbar" className="flex-column justify-content-between w-100 mh-100 overflow-auto align-items-start mt-4">
         <div className="w-100 h-100 pr-1 overflow-auto">
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            className="text-light text-decoration-none w-100 px-2 py-0 mb-2 d-flex justify-content-between align-items-center"
+            onClick={() => dispatch(actions.showModal({ modalName: 'addChannel' }))}
+          >
+            <span className="lead">{t('addChannelsBtnCaption')}</span>
+            <strong className="mr-1">+</strong>
+          </Button>
           <Nav className="flex-column">
             {channels.map((channel) => renderChannel({ ...props, ...channel, dispatch }))}
           </Nav>
         </div>
       </Navbar.Collapse>
+      {renderModalWindow({ name: modalName })}
     </Navbar>
   );
 };
@@ -61,6 +86,7 @@ const mapStateToProps = (state) => (
     channels: getChannels(state),
     countsMessages: getCountsMessages(state),
     currentChannelId: getCurrentChannelId(state),
+    modalName: getModalName(state),
   }
 );
 
