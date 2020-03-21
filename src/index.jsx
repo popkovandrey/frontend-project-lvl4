@@ -35,6 +35,8 @@ export default (dataGon) => {
 
   socket.on('newChannel', ({ data }) => store.dispatch(actions.channelAdd(data)));
 
+  socket.on('removeChannel', ({ data }) => store.dispatch(actions.channelRemove(data)));
+
   render(
     <Provider store={store}>
       <UserNameContext.Provider value={{ userName }}>

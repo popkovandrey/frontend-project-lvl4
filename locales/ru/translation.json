@@ -9,6 +9,7 @@
     "channelRemoveTitle": "Удалить канал",
     "placeholderAddChannel": "Введите название нового канала",
     "btnOk": "OK",
-    "btnCancel": "Отмена"
+    "btnCancel": "Отмена",
+    "confirmChannelRemove": "Вы действительно хотите удалить канал {{name}}?"
   }
 }

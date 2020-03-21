@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Formik, Form, Field } from 'formik';
@@ -25,6 +25,9 @@ const AddChannel = (props) => {
     hideModal();
   };
 
+  const input = useRef(null);
+  useEffect(() => input?.current?.focus());
+
   return (
     <Modal show={modalName === 'addChannel'} onHide={handleHideModal}>
       <Modal.Header closeButton>
@@ -40,6 +43,7 @@ const AddChannel = (props) => {
                 placeholder={t('modals.placeholderAddChannel')}
                 disabled={isSubmitting}
                 className="form-control flex-grow-1 mx-1 my-1"
+                innerRef={input}
               />
               <Button
                 type="submit"

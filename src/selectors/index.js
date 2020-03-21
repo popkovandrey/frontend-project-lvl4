@@ -5,6 +5,7 @@ const getMessagesById = (state) => state.messages.byId;
 const getMessagesAllIds = (state) => state.messages.allIds;
 const getChannelsById = (state) => state.channels.byId;
 const getChannelsAllIds = (state) => state.channels.allIds;
+const getId = (id) => id;
 
 export const getCurrentChannelId = (state) => state.app.currentChannelId;
 
@@ -13,6 +14,11 @@ export const getModalName = (state) => state.app.modalName;
 export const getChannels = createSelector(
   [getChannelsAllIds, getChannelsById],
   (allIds, byId) => allIds.map((id) => byId[id]),
+);
+
+export const getChannel = createSelector(
+  [getChannelsById, getId],
+  (byId, id) => byId[id],
 );
 
 export const getMessages = createSelector(

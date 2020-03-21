@@ -9,6 +9,7 @@
     "channelRemoveTitle": "Remove channel",
     "placeholderAddChannel": "Enter name new channel",
     "btnOk": "OK",
-    "btnCancel": "Cancel"
+    "btnCancel": "Cancel",
+    "confirmChannelRemove": "Do you really want to delete a channel {{name}}?"
   }
 }

@@ -4,6 +4,8 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import { connect, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import UserNameContext from '../UserNameContext';
 import actions from '../actions';
 import {
@@ -14,26 +16,49 @@ import {
 } from '../selectors';
 import getModalWindow from './modals';
 
-const handleSelectChannel = (props) => (event) => {
-  event.preventDefault();
-  const { dispatch, id } = props;
-  dispatch(actions.setCurrentChannelId({ id }));
-};
-
 const renderChannel = (props) => {
   const {
     id,
     name,
+    removable,
     currentChannelId,
+    // hoverChannelId,
     countsMessages,
+    dispatch,
   } = props;
 
   const isActive = id === currentChannelId;
 
+  const isVisibleIcon = isActive && removable;
+
+  const handleSelectChannel = (event) => {
+    event.preventDefault();
+    dispatch(actions.setCurrentChannelId({ id }));
+  };
+
+  const handleClickRemoveChannel = (event) => {
+    event.preventDefault();
+    dispatch(actions.showModal({ modalName: 'removeChannel' }));
+  };
+
   return (
     <Nav.Item key={id} className="ml-3">
-      <Nav.Link active={isActive} onClick={handleSelectChannel(props)}>
-        {`# ${name} [кол-во: ${countsMessages[id] || 0}]`}
+      <Nav.Link active={isActive} onClick={handleSelectChannel}>
+        <div className="d-flex justify-content-between">
+          {`# ${name}`}
+          <div className="d-flex justify-content-end">
+            {isVisibleIcon && <FontAwesomeIcon
+              icon={faEdit}
+              className="mr-2"
+            />}
+            {isVisibleIcon && <FontAwesomeIcon
+              icon={faTrashAlt}
+              onClick={handleClickRemoveChannel}
+              className="mr-2"
+            />}
+            <small>{countsMessages[id] || 0}</small>
+          </div>
+        </div>
       </Nav.Link>
     </Nav.Item>
   );
@@ -53,6 +78,7 @@ const NavBar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { userName } = useContext(UserNameContext);
+
   return (
     <Navbar bg="dark" variant="dark" className="col-md-2 flex-md-column" expand="md" style={{ minWidth: 'fit-content' }}>
       <Navbar.Brand>{t('brandName')}</Navbar.Brand>

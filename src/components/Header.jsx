@@ -22,7 +22,8 @@ const Header = (props) => {
 
   return (
     <header className={classes}>
-      <span className="lead">{`#${name} [кол-во: ${countMessages}]`}</span>
+      <span className="lead">{`#${name}`}</span>
+      <small className="align-self-end">{`сообщений: ${countMessages}`}</small>
     </header>
   );
 };
