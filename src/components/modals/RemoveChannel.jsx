@@ -2,9 +2,11 @@ import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { withTranslation, Trans } from 'react-i18next';
+import { useToasts } from 'react-toast-notifications';
 import { connect } from 'react-redux';
 import actions from '../../actions';
 import { getCurrentChannel } from '../../selectors';
+import Spinner from '../Spinner';
 
 const RemoveChannel = (props) => {
   const {
@@ -12,14 +14,21 @@ const RemoveChannel = (props) => {
     t,
     removeChannel,
     hideModal,
-    isLoading,
     currentChannel,
+    isLoading,
   } = props;
+
+  const { addToast } = useToasts();
 
   const handleHideModal = () => hideModal();
 
   const handleRemoveChannel = async () => {
-    await removeChannel(currentChannel);
+    try {
+      await removeChannel(currentChannel);
+    } catch ({ message }) {
+      addToast(message, { appearance: 'error', autoDismiss: true });
+    }
+
     hideModal();
   };
 
@@ -33,18 +42,11 @@ const RemoveChannel = (props) => {
       </Modal.Body>
       <Modal.Footer>
         <Button
-          variant="secondary"
-          disabled={isLoading}
-          onClick={handleHideModal}
-        >
-          {t('modals.btnCancel')}
-        </Button>
-        <Button
           variant="primary"
           disabled={isLoading}
           onClick={handleRemoveChannel}
         >
-          {t('modals.btnOk')}
+          {isLoading ? <Spinner /> : t('modals.btnOk')}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -53,8 +55,8 @@ const RemoveChannel = (props) => {
 
 const mapStateToProps = (state) => ({
   modalName: state.app.modalName,
-  isLoading: state.app.isLoading,
   currentChannel: getCurrentChannel(state),
+  isLoading: state.app.isLoading,
 });
 
 const mapDispatchToProps = (dispatch) => ({

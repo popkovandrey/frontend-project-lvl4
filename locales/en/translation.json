@@ -2,12 +2,14 @@
   "brandName": "Chat Slack",
   "prefixUser": "User: ",
   "formatDT": "{{date,  MM-DD-YYYY HH:mm:ss}}",
-  "addChannelsBtnCaption": "Channels:",
+  "addChannelsBtnCaption": "Channels",
   "modals": {
     "channelAddTitle": "Add channel",
     "channelRenameTitle": "Rename channel",
     "channelRemoveTitle": "Remove channel",
+    "placeholderAddMessage": "Enter new message",
     "placeholderAddChannel": "Enter name new channel",
+    "placeholderRenameChannel": "Enter new name channel",
     "btnOk": "OK",
     "btnCancel": "Cancel",
     "confirmChannelRemove": "Do you really want to delete a channel {{name}}?"

@@ -27,7 +27,7 @@ const messageAddAsync = (message) => async (dispatch, getState) => {
     const data = { attributes: { ...message, date: new Date() } };
     await axios.post(routes.channelMessagesPath(currentChannelId), { data });
   } catch (err) {
-    console.error(err);
+    console.log(err);
     throw err;
   } finally {
     dispatch(finishLoading());

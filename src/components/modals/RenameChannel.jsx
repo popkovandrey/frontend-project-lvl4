@@ -6,14 +6,16 @@ import { withTranslation } from 'react-i18next';
 import { useToasts } from 'react-toast-notifications';
 import { connect } from 'react-redux';
 import actions from '../../actions';
+import { getCurrentChannel } from '../../selectors';
 import Spinner from '../Spinner';
 
-const AddChannel = (props) => {
+const RenameChannel = (props) => {
   const {
     modalName,
     t,
-    addChannel,
+    renameChannel,
     hideModal,
+    currentChannel,
   } = props;
 
   const { addToast } = useToasts();
@@ -24,15 +26,13 @@ const AddChannel = (props) => {
     const { newChannelName } = formValues;
 
     if (newChannelName.trim() === '') {
-      /* eslint-disable no-param-reassign */
-      formValues.newChannelName = '';
       return;
     }
 
     const { setSubmitting, resetForm } = formActions;
 
     try {
-      await addChannel({ name: newChannelName });
+      await renameChannel({ ...currentChannel, name: newChannelName });
     } catch ({ message }) {
       addToast(message, { appearance: 'error', autoDismiss: true });
     }
@@ -48,18 +48,18 @@ const AddChannel = (props) => {
   useEffect(() => input?.current?.focus());
 
   return (
-    <Modal show={modalName === 'addChannel'} onHide={handleHideModal}>
+    <Modal show={modalName === 'renameChannel'} onHide={handleHideModal}>
       <Modal.Header closeButton>
-        <Modal.Title>{t('modals.channelAddTitle')}</Modal.Title>
+        <Modal.Title>{t('modals.channelRenameTitle')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Formik initialValues={{ newChannelName: '' }} onSubmit={handleSubmit}>
+        <Formik initialValues={{ newChannelName: currentChannel.name }} onSubmit={handleSubmit}>
           {({ isSubmitting }) => (
             <Form className="form-inline w-100 justify-content-between">
               <Field
                 name="newChannelName"
                 type="text"
-                placeholder={t('modals.placeholderAddChannel')}
+                placeholder={t('modals.placeholderRenameChannel')}
                 disabled={isSubmitting}
                 className="form-control flex-grow-1 mx-1 my-1"
                 innerRef={input}
@@ -82,11 +82,12 @@ const AddChannel = (props) => {
 
 const mapStateToProps = (state) => ({
   modalName: state.app.modalName,
+  currentChannel: getCurrentChannel(state),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(actions.hideModal()),
-  addChannel: (channel) => dispatch(actions.channelAddAsync(channel)),
+  renameChannel: (channel) => dispatch(actions.channelRenameAsync(channel)),
 });
 
-export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(AddChannel));
+export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(RenameChannel));

@@ -55,7 +55,7 @@ const channelRenameAsync = ({ id, name }) => async (dispatch) => {
   }
 };
 
-const channelRemoveAsync = ({ id }) => async (dispatch, getState) => {
+const channelRemoveAsync = ({ id }) => async (dispatch) => {
   dispatch(startLoading());
   try {
     await axios.delete(routes.channelPath(id));

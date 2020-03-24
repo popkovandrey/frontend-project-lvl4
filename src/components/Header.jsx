@@ -21,10 +21,10 @@ const Header = (props) => {
   const { name } = currentChannel;
 
   return (
-    <header className={classes}>
+    <div className={classes}>
       <span className="lead">{`#${name}`}</span>
       <small className="align-self-end">{`сообщений: ${countMessages}`}</small>
-    </header>
+    </div>
   );
 };
 
@@ -33,5 +33,4 @@ const mapStateToProps = (state) => ({
   countMessages: getCountMessagesCurrentChannel(state),
 });
 
-Header.displayName = 'Header';
 export default connect(mapStateToProps)(Header);

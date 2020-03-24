@@ -31,17 +31,13 @@ const Message = (props) => {
 
 const Messages = (props) => {
   const { messages } = props;
-  const mainClasses = classnames({
-    'd-flex flex-column position-relative': true,
-    // 'h-100 overflow-auto': true,
-  });
 
   return (
-    <main className={mainClasses}>
+    <div className="d-flex flex-column overflow-auto">
       {messages.map(({
         text, author, date, id,
       }) => <Message key={id} text={text} author={author} date={date} />)}
-    </main>
+    </div>
   );
 };
 

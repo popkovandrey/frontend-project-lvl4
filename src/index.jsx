@@ -2,10 +2,11 @@ import React from 'react';
 import { configureStore } from '@reduxjs/toolkit';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
+import { ToastProvider } from 'react-toast-notifications';
 import faker from 'faker';
 import cookie from 'js-cookie';
 import io from 'socket.io-client';
-import App from './components/App.jsx';
+import App from './components/App';
 import UserNameContext from './UserNameContext';
 import rootReducer from './reducers';
 import actions from './actions';
@@ -15,6 +16,7 @@ const cookieUserName = 'userName';
 
 export default (dataGon) => {
   const userName = cookie.get(cookieUserName) || faker.name.findName();
+
   cookie.set(cookieUserName, userName);
 
   const socket = io();
@@ -35,14 +37,18 @@ export default (dataGon) => {
 
   socket.on('newChannel', ({ data }) => store.dispatch(actions.channelAdd(data)));
 
+  socket.on('renameChannel', ({ data }) => store.dispatch(actions.channelRename(data)));
+
   socket.on('removeChannel', ({ data }) => store.dispatch(actions.channelRemove(data)));
 
   render(
     <Provider store={store}>
       <UserNameContext.Provider value={{ userName }}>
+      <ToastProvider>
         <App />
+      </ToastProvider>
       </UserNameContext.Provider>
     </Provider>,
-    document.getElementById('root'),
+    document.getElementById('chat'),
   );
 };

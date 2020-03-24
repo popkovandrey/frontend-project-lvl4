@@ -1,18 +1,17 @@
 import React, { useContext } from 'react';
 import { Formik, Form, Field } from 'formik';
-import { useDispatch, connect } from 'react-redux';
-import Button from 'react-bootstrap/Button';
+import { useDispatch } from 'react-redux';
+import { withTranslation } from 'react-i18next';
+import { useToasts } from 'react-toast-notifications';
 import actions from '../actions';
 import UserNameContext from '../UserNameContext';
-
-const mapStateToProps = (state) => ({
-  isLoading: state.app.isLoading,
-});
+import Spinner from './Spinner';
 
 const AddMessageForm = (props) => {
-  const { isLoading } = props;
+  const { t } = props;
   const dispatch = useDispatch();
   const { userName } = useContext(UserNameContext);
+  const { addToast } = useToasts();
 
   const handleSubmit = async (formValues, formActions) => {
     const { text } = formValues;
@@ -22,31 +21,35 @@ const AddMessageForm = (props) => {
       return;
     }
 
-    await dispatch(actions.messageAddAsync({ text, author: userName }));
+    try {
+      await dispatch(actions.messageAddAsync({ text, author: userName }));
+    } catch (err) {
+      addToast(err.message, { appearance: 'error', autoDismiss: true });
+      throw (err);
+    }
+
     setSubmitting(false);
+
     resetForm();
   };
 
   return (
-    <Formik initialValues={{ text: '' }} onSubmit={handleSubmit}>
-      {() => (
-        <Form className="mt-auto position-relative d-flex p-2">
-          <Field
-            name="text"
-            className="flex-grow-1"
-            disabled={isLoading}
-          />
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="align-self-end px-2 py-1 ml-1 btn-info"
-          >
-            Send
-          </Button>
-        </Form>
-      )}
-    </Formik>
+    <div className="mt-auto">
+      <Formik initialValues={{ text: '' }} onSubmit={handleSubmit}>
+        {({ isSubmitting }) => (
+          <Form className="d-flex">
+            <Field
+              name="text"
+              disabled={isSubmitting}
+              className="flex-grow-1 mx-1"
+              placeholder={t('modals.placeholderAddMessage')}
+            />
+            {isSubmitting ? <Spinner /> : null}
+          </Form>
+        )}
+      </Formik>
+    </div>
   );
 };
 
-export default connect(mapStateToProps)(AddMessageForm);
+export default withTranslation()(AddMessageForm);

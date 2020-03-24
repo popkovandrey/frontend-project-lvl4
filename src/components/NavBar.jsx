@@ -22,7 +22,6 @@ const renderChannel = (props) => {
     name,
     removable,
     currentChannelId,
-    // hoverChannelId,
     countsMessages,
     dispatch,
   } = props;
@@ -34,6 +33,11 @@ const renderChannel = (props) => {
   const handleSelectChannel = (event) => {
     event.preventDefault();
     dispatch(actions.setCurrentChannelId({ id }));
+  };
+
+  const handleClickRenameChannel = (event) => {
+    event.preventDefault();
+    dispatch(actions.showModal({ modalName: 'renameChannel' }));
   };
 
   const handleClickRemoveChannel = (event) => {
@@ -49,6 +53,7 @@ const renderChannel = (props) => {
           <div className="d-flex justify-content-end">
             {isVisibleIcon && <FontAwesomeIcon
               icon={faEdit}
+              onClick={handleClickRenameChannel}
               className="mr-2"
             />}
             {isVisibleIcon && <FontAwesomeIcon
