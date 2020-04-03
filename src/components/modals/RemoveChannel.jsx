@@ -22,8 +22,6 @@ const RemoveChannel = (props) => {
 
   const handleRemoveChannel = () => {
     channelRemoveAsync(currentChannel, hideModal);
-
-    // hideModal();
   };
 
   return (

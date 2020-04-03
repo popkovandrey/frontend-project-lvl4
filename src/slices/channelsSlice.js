@@ -30,46 +30,22 @@ const slice = createSlice({
 
       delete state.byId[id];
     },
-    channelRemoveRequest: (state) => {
+    channelActionRequest: (state) => {
       state.processing = true;
     },
-    channelRemoveSuccess: (state) => {
+    channelActionSuccess: (state) => {
       state.processing = false;
     },
-    channelRemoveFailure: (state) => {
-      state.processing = false;
-    },
-    channelRenameRequest: (state) => {
-      state.processing = true;
-    },
-    channelRenameSuccess: (state) => {
-      state.processing = false;
-    },
-    channelRenameFailure: (state) => {
-      state.processing = false;
-    },
-    channelAddRequest: (state) => {
-      state.processing = true;
-    },
-    channelAddSuccess: (state) => {
-      state.processing = false;
-    },
-    channelAddFailure: (state) => {
+    channelActionFailure: (state) => {
       state.processing = false;
     },
   },
 });
 
 const {
-  channelRemoveRequest,
-  channelRemoveSuccess,
-  channelRemoveFailure,
-  channelRenameRequest,
-  channelRenameSuccess,
-  channelRenameFailure,
-  channelAddRequest,
-  channelAddSuccess,
-  channelAddFailure,
+  channelActionRequest,
+  channelActionSuccess,
+  channelActionFailure,
 } = slice.actions;
 
 const useChannelAddAsync = () => {
@@ -77,13 +53,13 @@ const useChannelAddAsync = () => {
   const { addToast } = useToasts();
 
   const channelAddAsync = async (channel, callback) => {
-    dispatch(channelAddRequest());
+    dispatch(channelActionRequest());
     try {
       const data = { attributes: { ...channel } };
       await axios.post(routes.channelsPath(), { data });
-      dispatch(channelAddSuccess());
+      dispatch(channelActionSuccess());
     } catch (err) {
-      dispatch(channelAddFailure());
+      dispatch(channelActionFailure());
       addToast(err.message, { appearance: 'error', autoDismiss: true });
       console.log('channelAddAsync', err);
       throw err;
@@ -102,13 +78,13 @@ const useChannelRenameAsync = () => {
   const { addToast } = useToasts();
 
   const channelRenameAsync = async ({ id, name }, callback) => {
-    dispatch(channelRenameRequest());
+    dispatch(channelActionRequest());
     try {
       const data = { attributes: { name } };
       await axios.patch(routes.channelPath(id), { data });
-      dispatch(channelRenameSuccess());
+      dispatch(channelActionSuccess());
     } catch (err) {
-      dispatch(channelRenameFailure());
+      dispatch(channelActionFailure());
       addToast(err.message, { appearance: 'error', autoDismiss: true });
       console.log('channelRenameAsync', err);
       throw err;
@@ -127,12 +103,12 @@ const useChannelRemoveAsync = () => {
   const { addToast } = useToasts();
 
   const channelRemoveAsync = async ({ id }, callback) => {
-    dispatch(channelRemoveRequest());
+    dispatch(channelActionRequest());
     try {
       await axios.delete(routes.channelPath(id));
-      dispatch(channelRemoveSuccess());
+      dispatch(channelActionSuccess());
     } catch (err) {
-      dispatch(channelRemoveFailure());
+      dispatch(channelActionFailure());
       addToast(err.message, { appearance: 'error', autoDismiss: true });
       console.log('channelRemoveAsync', err);
       throw err;
@@ -145,44 +121,6 @@ const useChannelRemoveAsync = () => {
     channelRemoveAsync,
   };
 };
-
-/* const channelAddAsync = (channel) => async (dispatch) => {
-  // dispatch(startLoading());
-  try {
-    const data = { attributes: { ...channel } };
-    await axios.post(routes.channelsPath(), { data });
-  } catch (err) {
-    console.error(err);
-    throw err;
-  } finally {
-    // dispatch(finishLoading());
-  }
-};
-
-const channelRenameAsync = ({ id, name }) => async (dispatch) => {
-  // dispatch(startLoading());
-  try {
-    const data = { attributes: { name } };
-    await axios.patch(routes.channelPath(id), { data });
-  } catch (err) {
-    console.error(err);
-    throw err;
-  } finally {
-    // dispatch(finishLoading());
-  }
-};
-
-const channelRemoveAsync = ({ id }) => async (dispatch) => {
-  // dispatch(startLoading());
-  try {
-    await axios.delete(routes.channelPath(id));
-  } catch (err) {
-    console.error(err);
-    throw err;
-  } finally {
-    // dispatch(finishLoading());
-  }
-}; */
 
 const actions = { ...slice.actions };
 export {

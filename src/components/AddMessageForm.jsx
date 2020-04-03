@@ -19,7 +19,7 @@ const AddMessageForm = (props) => {
 
   const handleSubmit = (formValues, formActions) => {
     const { text } = formValues;
-    const { /* setSubmitting, */ resetForm } = formActions;
+    const { resetForm } = formActions;
 
     if (!text.trim()) {
       return;
@@ -27,15 +27,13 @@ const AddMessageForm = (props) => {
 
     messageAddAsync({ text, author: userName });
 
-    // setSubmitting(false);
-
     resetForm();
   };
 
   return (
     <div className="mt-auto">
       <Formik initialValues={{ text: '' }} onSubmit={handleSubmit}>
-        {(/* { isSubmitting } */) => (
+        {() => (
           <Form className="d-flex">
             <Field
               name="text"
