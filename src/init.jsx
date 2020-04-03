@@ -8,8 +8,7 @@ import cookie from 'js-cookie';
 import io from 'socket.io-client';
 import App from './components/App';
 import UserNameContext from './UserNameContext';
-import rootReducer from './reducers';
-import actions from './actions';
+import rootReducer, { actions } from './slices';
 import normolizeData from './utils/normolizeData';
 
 const cookieUserName = 'userName';
@@ -27,19 +26,19 @@ export default (dataGon) => {
     reducer: rootReducer,
     preloadedState: {
       channels: normolizeData(channels),
-      messages: normolizeData(messages),
+      messages: { messages, processingSendMessage: false },
       app: { currentChannelId },
     },
     devTools: process.env.NODE_ENV !== 'production',
   });
 
-  socket.on('newMessage', ({ data }) => store.dispatch(actions.messageAdd(data)));
+  socket.on('newMessage', ({ data }) => store.dispatch(actions.messageFetchSuccess(data)));
 
-  socket.on('newChannel', ({ data }) => store.dispatch(actions.channelAdd(data)));
+  socket.on('newChannel', ({ data }) => store.dispatch(actions.channelAddFetchSuccess(data)));
 
-  socket.on('renameChannel', ({ data }) => store.dispatch(actions.channelRename(data)));
+  socket.on('renameChannel', ({ data }) => store.dispatch(actions.channelRenameFetchSuccess(data)));
 
-  socket.on('removeChannel', ({ data }) => store.dispatch(actions.channelRemove(data)));
+  socket.on('removeChannel', ({ data }) => store.dispatch(actions.channelRemoveFetchSuccess(data)));
 
   render(
     <Provider store={store}>

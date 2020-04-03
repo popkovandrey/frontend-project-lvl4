@@ -2,25 +2,24 @@ import React, { useRef, useEffect } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Formik, Form, Field } from 'formik';
-import { withTranslation } from 'react-i18next';
-import { useToasts } from 'react-toast-notifications';
+import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
-import actions from '../../actions';
+import { actions, asyncActions } from '../../slices';
 import Spinner from '../Spinner';
 
 const AddChannel = (props) => {
   const {
     modalName,
-    t,
-    addChannel,
     hideModal,
+    processing,
   } = props;
 
-  const { addToast } = useToasts();
+  const { t } = useTranslation();
+  const { channelAddAsync } = asyncActions.useChannelAddAsync();
 
   const handleHideModal = () => hideModal();
 
-  const handleSubmit = async (formValues, formActions) => {
+  const handleSubmit = (formValues, formActions) => {
     const { newChannelName } = formValues;
 
     if (newChannelName.trim() === '') {
@@ -29,19 +28,17 @@ const AddChannel = (props) => {
       return;
     }
 
-    const { setSubmitting, resetForm } = formActions;
+    const { resetForm } = formActions;
 
-    try {
-      await addChannel({ name: newChannelName });
-    } catch ({ message }) {
-      addToast(message, { appearance: 'error', autoDismiss: true });
-    }
+    const callbackFinishAddChannel = () => {
+      resetForm();
+      hideModal();
+    };
 
-    setSubmitting(false);
-
-    resetForm();
-
-    hideModal();
+    channelAddAsync(
+      { name: newChannelName },
+      callbackFinishAddChannel,
+    );
   };
 
   const input = useRef(null);
@@ -54,13 +51,13 @@ const AddChannel = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Formik initialValues={{ newChannelName: '' }} onSubmit={handleSubmit}>
-          {({ isSubmitting }) => (
+          {() => (
             <Form className="form-inline w-100 justify-content-between">
               <Field
                 name="newChannelName"
                 type="text"
                 placeholder={t('modals.placeholderAddChannel')}
-                disabled={isSubmitting}
+                disabled={processing}
                 className="form-control flex-grow-1 mx-1 my-1"
                 innerRef={input}
               />
@@ -68,9 +65,9 @@ const AddChannel = (props) => {
                 type="submit"
                 variant="info"
                 className="col-sm-auto mx-1 my-1"
-                disabled={isSubmitting}
+                disabled={processing}
               >
-                {isSubmitting ? <Spinner /> : t('modals.btnOk')}
+                {processing ? <Spinner /> : t('modals.btnOk')}
               </Button>
             </Form>
           )}
@@ -82,11 +79,11 @@ const AddChannel = (props) => {
 
 const mapStateToProps = (state) => ({
   modalName: state.app.modalName,
+  processing: state.channels.processing,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(actions.hideModal()),
-  addChannel: (channel) => dispatch(actions.channelAddAsync(channel)),
 });
 
-export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(AddChannel));
+export default connect(mapStateToProps, mapDispatchToProps)(AddChannel);

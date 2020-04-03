@@ -1,7 +1,7 @@
 {
   "brandName": "Chat Slack",
   "prefixUser": "User: ",
-  "formatDT": "{{date,  MM-DD-YYYY HH:mm:ss}}",
+  "formatDT": "{{date, MM-dd-yyyy HH:mm:ss}}",
   "addChannelsBtnCaption": "Channels",
   "modals": {
     "channelAddTitle": "Add channel",

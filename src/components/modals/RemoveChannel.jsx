@@ -1,35 +1,29 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { withTranslation, Trans } from 'react-i18next';
-import { useToasts } from 'react-toast-notifications';
+import { useTranslation, Trans } from 'react-i18next';
 import { connect } from 'react-redux';
-import actions from '../../actions';
+import { actions, asyncActions } from '../../slices';
 import { getCurrentChannel } from '../../selectors';
 import Spinner from '../Spinner';
 
 const RemoveChannel = (props) => {
   const {
     modalName,
-    t,
-    removeChannel,
     hideModal,
     currentChannel,
-    isLoading,
+    processing,
   } = props;
 
-  const { addToast } = useToasts();
+  const { t } = useTranslation();
+  const { channelRemoveAsync } = asyncActions.useChannelRemoveAsync();
 
   const handleHideModal = () => hideModal();
 
-  const handleRemoveChannel = async () => {
-    try {
-      await removeChannel(currentChannel);
-    } catch ({ message }) {
-      addToast(message, { appearance: 'error', autoDismiss: true });
-    }
+  const handleRemoveChannel = () => {
+    channelRemoveAsync(currentChannel, hideModal);
 
-    hideModal();
+    // hideModal();
   };
 
   return (
@@ -43,10 +37,10 @@ const RemoveChannel = (props) => {
       <Modal.Footer>
         <Button
           variant="primary"
-          disabled={isLoading}
+          disabled={processing}
           onClick={handleRemoveChannel}
         >
-          {isLoading ? <Spinner /> : t('modals.btnOk')}
+          {processing ? <Spinner /> : t('modals.btnOk')}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -56,12 +50,11 @@ const RemoveChannel = (props) => {
 const mapStateToProps = (state) => ({
   modalName: state.app.modalName,
   currentChannel: getCurrentChannel(state),
-  isLoading: state.app.isLoading,
+  processing: state.channels.processing,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(actions.hideModal()),
-  removeChannel: (channel) => dispatch(actions.channelRemoveAsync(channel)),
 });
 
-export default withTranslation()(connect(mapStateToProps, mapDispatchToProps)(RemoveChannel));
+export default connect(mapStateToProps, mapDispatchToProps)(RemoveChannel);

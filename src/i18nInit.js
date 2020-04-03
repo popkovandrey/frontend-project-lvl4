@@ -1,7 +1,12 @@
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
-import moment from 'moment';
+// import moment from 'moment';
+import { 
+  format as formatDF, 
+  parseISO, 
+  isValid,
+} from 'date-fns';
 import en from '../locales/en/translation.json';
 import ru from '../locales/ru/translation.json';
 
@@ -15,8 +20,8 @@ export default async () => {
       interpolation: {
         escapeValue: false,
         format: (value, format) => {
-          if (moment(value).isValid()) {
-            return moment(value).format(format);
+          if (isValid(parseISO(value))) {
+            return formatDF(parseISO(value), format);
           }
           return value;
         },
@@ -27,5 +32,5 @@ export default async () => {
       },
     });
 
-  i18n.on('languageChanged', (lng) => moment.locale(lng));
+  // i18n.on('languageChanged', (lng) => moment.locale(lng));
 };

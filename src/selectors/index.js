@@ -1,30 +1,24 @@
 import { createSelector } from 'reselect';
 import { countBy } from 'lodash';
 
-const getMessagesById = (state) => state.messages.byId;
-const getMessagesAllIds = (state) => state.messages.allIds;
+const getMessages = (state) => state.messages.messages;
 const getChannelsById = (state) => state.channels.byId;
-const getChannelsAllIds = (state) => state.channels.allIds;
-const getId = (id) => id;
+// const getId = (id) => id;
 
 export const getCurrentChannelId = (state) => state.app.currentChannelId;
 
 export const getModalName = (state) => state.app.modalName;
 
 export const getChannels = createSelector(
-  [getChannelsAllIds, getChannelsById],
-  (allIds, byId) => allIds.map((id) => byId[id]),
+  getChannelsById,
+  (byId) => Object.values(byId),
 );
 
-export const getChannel = createSelector(
-  [getChannelsById, getId],
-  (byId, id) => byId[id],
-);
-
-export const getMessages = createSelector(
-  [getMessagesAllIds, getMessagesById],
-  (allIds, byId) => allIds.map((id) => byId[id]),
-);
+/* export const getChannel = createSelector(
+  [getChannels, getId],
+  (channels, _id) => channels
+    .filter(({ id }) => id === _id),
+); */
 
 export const getCurrentChannelMessages = createSelector(
   [getCurrentChannelId, getMessages],
@@ -34,7 +28,7 @@ export const getCurrentChannelMessages = createSelector(
 
 export const getCurrentChannel = createSelector(
   [getCurrentChannelId, getChannelsById],
-  (currentChannelId, channelsById) => channelsById[currentChannelId] || {},
+  (currentChannelId, byId) => byId[currentChannelId],
 );
 
 export const getCountMessagesCurrentChannel = createSelector(
@@ -45,6 +39,6 @@ export const getCountMessagesCurrentChannel = createSelector(
 );
 
 export const getCountsMessages = createSelector(
-  getMessagesById,
-  (byId) => countBy(byId, (item) => item.channelId),
+  getMessages,
+  (messages) => countBy(messages, (item) => item.channelId),
 );
