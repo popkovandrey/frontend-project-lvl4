@@ -1,70 +1,45 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
+import { pullAllBy } from 'lodash';
 import routes from '../routes';
-// import { defaultChannelId/* , actions as appActions */} from './appSlice';
-
-// const { startLoading, finishLoading } = appActions;
 
 const slice = createSlice({
   name: 'channels',
   initialState: {
-    byId: {},
-    processing: false,
+    channels: [],
   },
   reducers: {
     channelAddFetchSuccess: (state, action) => {
-      const { id, attributes: channel } = action.payload;
+      const { attributes: channel } = action.payload;
 
-      state.byId[id] = channel;
+      state.channels.push(channel);
     },
     channelRenameFetchSuccess: (state, action) => {
       const { id, attributes: { name } } = action.payload;
 
-      state.byId[id].name = name;
+      const [channel] = state.channels.filter((item) => item.id === id);
+      channel.name = name;
     },
     channelRemoveFetchSuccess: (state, action) => {
       const { id } = action.payload;
 
-      delete state.byId[id];
-    },
-    channelActionRequest: (state) => {
-      state.processing = true;
-    },
-    channelActionSuccess: (state) => {
-      state.processing = false;
-    },
-    channelActionFailure: (state) => {
-      state.processing = false;
+      pullAllBy(state.channels, [{ id }], 'id');
     },
   },
 });
 
-const {
-  channelActionRequest,
-  channelActionSuccess,
-  channelActionFailure,
-} = slice.actions;
-
 const useChannelAddAsync = () => {
-  const dispatch = useDispatch();
   const { addToast } = useToasts();
 
-  const channelAddAsync = async (channel, callback) => {
-    dispatch(channelActionRequest());
+  const channelAddAsync = async (channel) => {
     try {
       const data = { attributes: { ...channel } };
       await axios.post(routes.channelsPath(), { data });
-      dispatch(channelActionSuccess());
     } catch (err) {
-      dispatch(channelActionFailure());
       addToast(err.message, { appearance: 'error', autoDismiss: true });
       console.log('channelAddAsync', err);
-      throw err;
-    } finally {
-      callback();
     }
   };
 
@@ -74,22 +49,15 @@ const useChannelAddAsync = () => {
 };
 
 const useChannelRenameAsync = () => {
-  const dispatch = useDispatch();
   const { addToast } = useToasts();
 
-  const channelRenameAsync = async ({ id, name }, callback) => {
-    dispatch(channelActionRequest());
+  const channelRenameAsync = async ({ id, name }) => {
     try {
       const data = { attributes: { name } };
       await axios.patch(routes.channelPath(id), { data });
-      dispatch(channelActionSuccess());
     } catch (err) {
-      dispatch(channelActionFailure());
       addToast(err.message, { appearance: 'error', autoDismiss: true });
       console.log('channelRenameAsync', err);
-      throw err;
-    } finally {
-      callback();
     }
   };
 
@@ -99,21 +67,14 @@ const useChannelRenameAsync = () => {
 };
 
 const useChannelRemoveAsync = () => {
-  const dispatch = useDispatch();
   const { addToast } = useToasts();
 
-  const channelRemoveAsync = async ({ id }, callback) => {
-    dispatch(channelActionRequest());
+  const channelRemoveAsync = async ({ id }) => {
     try {
       await axios.delete(routes.channelPath(id));
-      dispatch(channelActionSuccess());
     } catch (err) {
-      dispatch(channelActionFailure());
       addToast(err.message, { appearance: 'error', autoDismiss: true });
       console.log('channelRemoveAsync', err);
-      throw err;
-    } finally {
-      callback();
     }
   };
 

@@ -13,7 +13,6 @@ const RenameChannel = (props) => {
     modalName,
     hideModal,
     currentChannel,
-    processing,
   } = props;
 
   const { t } = useTranslation();
@@ -21,24 +20,20 @@ const RenameChannel = (props) => {
 
   const handleHideModal = () => hideModal();
 
-  const handleSubmit = (formValues, formActions) => {
+  const handleSubmit = async (formValues, formActions) => {
     const { newChannelName } = formValues;
 
     if (newChannelName.trim() === '') {
       return;
     }
 
-    const { resetForm } = formActions;
+    const { resetForm, setSubmitting } = formActions;
 
-    const callbackFinishRenameChannel = () => {
-      resetForm();
-      hideModal();
-    };
+    await channelRenameAsync({ ...currentChannel, name: newChannelName });
 
-    channelRenameAsync(
-      { ...currentChannel, name: newChannelName },
-      callbackFinishRenameChannel,
-    );
+    setSubmitting(false);
+    resetForm();
+    hideModal();
   };
 
   const input = useRef(null);
@@ -51,13 +46,13 @@ const RenameChannel = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Formik initialValues={{ newChannelName: currentChannel.name }} onSubmit={handleSubmit}>
-          {() => (
+          {({ isSubmitting }) => (
             <Form className="form-inline w-100 justify-content-between">
               <Field
                 name="newChannelName"
                 type="text"
                 placeholder={t('modals.placeholderRenameChannel')}
-                disabled={processing}
+                disabled={isSubmitting}
                 className="form-control flex-grow-1 mx-1 my-1"
                 innerRef={input}
               />
@@ -65,9 +60,9 @@ const RenameChannel = (props) => {
                 type="submit"
                 variant="info"
                 className="col-sm-auto mx-1 my-1"
-                disabled={processing}
+                disabled={isSubmitting}
               >
-                {processing ? <Spinner /> : t('modals.btnOk')}
+                {isSubmitting ? <Spinner /> : t('modals.btnOk')}
               </Button>
             </Form>
           )}
@@ -80,7 +75,6 @@ const RenameChannel = (props) => {
 const mapStateToProps = (state) => ({
   modalName: state.app.modalName,
   currentChannel: getCurrentChannel(state),
-  processing: state.channels.processing,
 });
 
 const mapDispatchToProps = (dispatch) => ({

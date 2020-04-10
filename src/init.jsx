@@ -9,7 +9,6 @@ import io from 'socket.io-client';
 import App from './components/App';
 import UserNameContext from './UserNameContext';
 import rootReducer, { actions } from './slices';
-import normolizeData from './utils/normolizeData';
 
 const cookieUserName = 'userName';
 
@@ -25,7 +24,7 @@ export default (dataGon) => {
   const store = configureStore({
     reducer: rootReducer,
     preloadedState: {
-      channels: normolizeData(channels),
+      channels: { channels, processing: false },
       messages: { messages, processingSendMessage: false },
       app: { currentChannelId },
     },

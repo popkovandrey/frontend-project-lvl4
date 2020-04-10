@@ -11,7 +11,6 @@ const AddChannel = (props) => {
   const {
     modalName,
     hideModal,
-    processing,
   } = props;
 
   const { t } = useTranslation();
@@ -19,7 +18,7 @@ const AddChannel = (props) => {
 
   const handleHideModal = () => hideModal();
 
-  const handleSubmit = (formValues, formActions) => {
+  const handleSubmit = async (formValues, formActions) => {
     const { newChannelName } = formValues;
 
     if (newChannelName.trim() === '') {
@@ -28,17 +27,13 @@ const AddChannel = (props) => {
       return;
     }
 
-    const { resetForm } = formActions;
+    const { resetForm, setSubmitting } = formActions;
 
-    const callbackFinishAddChannel = () => {
-      resetForm();
-      hideModal();
-    };
+    await channelAddAsync({ name: newChannelName });
 
-    channelAddAsync(
-      { name: newChannelName },
-      callbackFinishAddChannel,
-    );
+    setSubmitting(false);
+    resetForm();
+    hideModal();
   };
 
   const input = useRef(null);
@@ -51,13 +46,13 @@ const AddChannel = (props) => {
       </Modal.Header>
       <Modal.Body>
         <Formik initialValues={{ newChannelName: '' }} onSubmit={handleSubmit}>
-          {() => (
+          {({ isSubmitting }) => (
             <Form className="form-inline w-100 justify-content-between">
               <Field
                 name="newChannelName"
                 type="text"
                 placeholder={t('modals.placeholderAddChannel')}
-                disabled={processing}
+                disabled={isSubmitting}
                 className="form-control flex-grow-1 mx-1 my-1"
                 innerRef={input}
               />
@@ -65,9 +60,9 @@ const AddChannel = (props) => {
                 type="submit"
                 variant="info"
                 className="col-sm-auto mx-1 my-1"
-                disabled={processing}
+                disabled={isSubmitting}
               >
-                {processing ? <Spinner /> : t('modals.btnOk')}
+                {isSubmitting ? <Spinner /> : t('modals.btnOk')}
               </Button>
             </Form>
           )}
@@ -79,7 +74,6 @@ const AddChannel = (props) => {
 
 const mapStateToProps = (state) => ({
   modalName: state.app.modalName,
-  processing: state.channels.processing,
 });
 
 const mapDispatchToProps = (dispatch) => ({
