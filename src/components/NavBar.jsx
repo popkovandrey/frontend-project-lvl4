@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import { connect, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -27,7 +27,6 @@ const renderChannel = (props) => {
   } = props;
 
   const isActive = id === currentChannelId;
-
   const isVisibleIcon = isActive && removable;
 
   const handleSelectChannel = (event) => {
@@ -78,8 +77,11 @@ const renderModalWindow = (modalInfo) => {
   return <ModalWindow />;
 };
 
-const NavBar = (props) => {
-  const { channels, modalName } = props;
+const NavBar = () => {
+  const channels = useSelector((state) => getChannels(state));
+  const countsMessages = useSelector((state) => getCountsMessages(state));
+  const currentChannelId = useSelector((state) => getCurrentChannelId(state));
+  const modalName = useSelector((state) => getModalName(state));
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { userName } = useContext(UserNameContext);
@@ -103,7 +105,9 @@ const NavBar = (props) => {
             <strong className="mr-1">+</strong>
           </Button>
           <Nav className="flex-column">
-            {channels.map((channel) => renderChannel({ ...props, ...channel, dispatch }))}
+            {channels.map((channel) => renderChannel({
+              ...channel, countsMessages, currentChannelId, dispatch,
+            }))}
           </Nav>
         </div>
       </Navbar.Collapse>
@@ -112,13 +116,4 @@ const NavBar = (props) => {
   );
 };
 
-const mapStateToProps = (state) => (
-  {
-    channels: getChannels(state),
-    countsMessages: getCountsMessages(state),
-    currentChannelId: getCurrentChannelId(state),
-    modalName: getModalName(state),
-  }
-);
-
-export default connect(mapStateToProps)(NavBar);
+export default NavBar;

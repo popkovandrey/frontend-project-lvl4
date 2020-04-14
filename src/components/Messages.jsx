@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Toast from 'react-bootstrap/Toast';
 import classnames from 'classnames';
 import { Trans } from 'react-i18next';
@@ -29,8 +29,8 @@ const Message = (props) => {
   );
 };
 
-const Messages = (props) => {
-  const { messages } = props;
+const Messages = () => {
+  const messages = useSelector((state) => getCurrentChannelMessages(state));
 
   return (
     <div className="d-flex flex-column overflow-auto">
@@ -41,8 +41,4 @@ const Messages = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  messages: getCurrentChannelMessages(state),
-});
-
-export default connect(mapStateToProps)(Messages);
+export default Messages;

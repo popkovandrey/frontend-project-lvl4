@@ -1,15 +1,14 @@
 import { combineReducers } from 'redux';
-
 import app, { actions as appActions } from './appSlice';
 import
 channels,
 {
   actions as channelsActions,
-  useChannelAddAsync,
-  useChannelRenameAsync,
-  useChannelRemoveAsync,
+  useAddChannel,
+  useRenameChannel,
+  useRemoveChannel,
 } from './channelsSlice';
-import messages, { actions as messagesActions, useMessageAddAsync } from './messagesSlice';
+import messages, { actions as messagesActions, useAddMessage } from './messagesSlice';
 
 export default combineReducers({
   app,
@@ -24,10 +23,10 @@ const actions = {
 };
 
 const asyncActions = {
-  useChannelAddAsync,
-  useChannelRenameAsync,
-  useChannelRemoveAsync,
-  useMessageAddAsync,
+  useAddChannel,
+  useRenameChannel,
+  useRemoveChannel,
+  useAddMessage,
 };
 
 export { actions, asyncActions };

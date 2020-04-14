@@ -1,10 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getCountMessagesCurrentChannel, getCurrentChannel } from '../selectors';
 
-const Header = (props) => {
-  const { currentChannel, countMessages } = props;
+const Header = () => {
+  const currentChannel = useSelector((state) => getCurrentChannel(state));
+  const countMessages = useSelector((state) => getCountMessagesCurrentChannel(state));
 
   const classes = classnames(
     {
@@ -28,9 +29,4 @@ const Header = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentChannel: getCurrentChannel(state),
-  countMessages: getCountMessagesCurrentChannel(state),
-});
-
-export default connect(mapStateToProps)(Header);
+export default Header;

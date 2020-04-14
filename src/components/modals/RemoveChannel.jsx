@@ -16,12 +16,12 @@ const RemoveChannel = (props) => {
   } = props;
 
   const { t } = useTranslation();
-  const { channelRemoveAsync } = asyncActions.useChannelRemoveAsync();
+  const { removeChannel } = asyncActions.useRemoveChannel();
 
   const handleHideModal = () => hideModal();
 
   const handleSubmit = async () => {
-    await channelRemoveAsync(currentChannel);
+    await removeChannel(currentChannel);
 
     hideModal();
   };

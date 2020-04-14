@@ -9,7 +9,7 @@ const AddMessageForm = () => {
   const { t } = useTranslation();
   const { userName } = useContext(UserNameContext);
 
-  const { messageAddAsync } = asyncActions.useMessageAddAsync();
+  const { addMessage } = asyncActions.useAddMessage();
 
   const handleSubmit = async (formValues, formActions) => {
     const { text } = formValues;
@@ -19,7 +19,7 @@ const AddMessageForm = () => {
       return;
     }
 
-    await messageAddAsync({ text, author: userName });
+    await addMessage({ text, author: userName });
 
     setSubmitting(false);
     resetForm();

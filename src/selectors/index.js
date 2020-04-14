@@ -16,11 +16,7 @@ export const getCurrentChannelMessages = createSelector(
 
 export const getCurrentChannel = createSelector(
   [getCurrentChannelId, getChannels],
-  (currentChannelId, channels) => {
-    const [channel] = channels.filter((item) => item.id === currentChannelId);
-
-    return channel;
-  },
+  (currentChannelId, channels) => channels.find((channel) => channel.id === currentChannelId),
 );
 
 export const getCountMessagesCurrentChannel = createSelector(

@@ -16,7 +16,7 @@ const RenameChannel = (props) => {
   } = props;
 
   const { t } = useTranslation();
-  const { channelRenameAsync } = asyncActions.useChannelRenameAsync();
+  const { renameChannel } = asyncActions.useRenameChannel();
 
   const handleHideModal = () => hideModal();
 
@@ -29,7 +29,7 @@ const RenameChannel = (props) => {
 
     const { resetForm, setSubmitting } = formActions;
 
-    await channelRenameAsync({ ...currentChannel, name: newChannelName });
+    await renameChannel({ ...currentChannel, name: newChannelName });
 
     setSubmitting(false);
     resetForm();

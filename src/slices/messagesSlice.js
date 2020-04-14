@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { useStore } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useToasts } from 'react-toast-notifications';
-import { pullAllBy } from 'lodash';
+import { remove } from 'lodash';
 import routes from '../routes';
 import { actions as channelsActions } from './channelsSlice';
+import { getCurrentChannelId } from '../selectors';
 
 const slice = createSlice({
   name: 'messages',
@@ -21,18 +22,17 @@ const slice = createSlice({
   extraReducers: {
     [channelsActions.channelRemoveFetchSuccess]: (state, { payload }) => {
       const { id } = payload;
-      pullAllBy(state.messages, [{ channelId: id }], 'channelId');
+      remove(state.messages, (message) => message.channelId === id);
     },
   },
 });
 
-const useMessageAddAsync = () => {
-  const store = useStore();
+const useAddMessage = () => {
+  const currentChannelId = useSelector((state) => getCurrentChannelId(state));
   const { addToast } = useToasts();
 
-  const messageAddAsync = async (message) => {
+  const addMessage = async (message) => {
     try {
-      const { currentChannelId } = store.getState().app;
       const data = { attributes: { ...message, date: new Date() } };
       await axios.post(routes.channelMessagesPath(currentChannelId), { data });
     } catch (err) {
@@ -42,13 +42,13 @@ const useMessageAddAsync = () => {
   };
 
   return {
-    messageAddAsync,
+    addMessage,
   };
 };
 
 const actions = { ...slice.actions };
 export {
   actions,
-  useMessageAddAsync,
+  useAddMessage,
 };
 export default slice.reducer;

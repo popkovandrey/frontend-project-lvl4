@@ -14,7 +14,7 @@ const AddChannel = (props) => {
   } = props;
 
   const { t } = useTranslation();
-  const { channelAddAsync } = asyncActions.useChannelAddAsync();
+  const { addChannel } = asyncActions.useAddChannel();
 
   const handleHideModal = () => hideModal();
 
@@ -29,7 +29,7 @@ const AddChannel = (props) => {
 
     const { resetForm, setSubmitting } = formActions;
 
-    await channelAddAsync({ name: newChannelName });
+    await addChannel({ name: newChannelName });
 
     setSubmitting(false);
     resetForm();
